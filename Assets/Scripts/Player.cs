@@ -1,3 +1,4 @@
+using System;
 using FishNet.Object;
 using FishNet.Object.Prediction;
 using UnityEngine;
@@ -40,10 +41,25 @@ namespace FarmGame3D
         public float MoveRate = 10f;
         private Rigidbody rb;
         private bool subscribed;
+        private Animator anim;
+        private float horizontal;
+        private float vertical;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            anim = GetComponentInChildren<Animator>();
+        }
+
+        private void Update()
+        {
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
+            
+            if (horizontal == 0f && vertical == 0f)
+                anim.SetBool("IsMoving", false);
+            else 
+                anim.SetBool("IsMoving", true);
         }
 
         private void SubscribeToTimeManager(bool subscribe)
@@ -133,8 +149,8 @@ namespace FarmGame3D
         {
             data = default;
 
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
 
             if (horizontal == 0f && vertical == 0f) return;
 
@@ -144,8 +160,8 @@ namespace FarmGame3D
         [Replicate]
         private void Move(MoveData data, bool asServer, bool replaying = false)
         {
-            Vector3 movement = new Vector3(data.Horizontal, 0f, data.Vertical).normalized * MoveRate;
-            rb.AddForce(movement);
+            Vector3 movement = new Vector3(data.Horizontal, 0f, data.Vertical) * MoveRate;
+            rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
         }
 
         [Reconcile]
