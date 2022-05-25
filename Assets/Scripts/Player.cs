@@ -13,11 +13,13 @@ namespace FarmGame3D
         {
             public float Horizontal;
             public float Vertical;
+            public Quaternion Rotation;
 
-            public MoveData(float horizontal, float vertical)
+            public MoveData(float horizontal, float vertical, Quaternion rotation)
             {
                 Horizontal = horizontal;
                 Vertical = vertical;
+                Rotation = rotation;
             }
         }
 
@@ -44,6 +46,7 @@ namespace FarmGame3D
         private Animator anim;
         private float horizontal;
         private float vertical;
+        private bool isOnGround;
 
         private void Awake()
         {
@@ -55,11 +58,23 @@ namespace FarmGame3D
         {
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
+
+            float inputMagnitude = Mathf.Clamp01(rb.velocity.magnitude);
             
-            if (horizontal == 0f && vertical == 0f)
-                anim.SetBool("IsMoving", false);
-            else 
-                anim.SetBool("IsMoving", true);
+            anim.SetFloat("Speed", inputMagnitude);
+
+            var localVelocity = transform.InverseTransformDirection(rb.velocity);
+
+            Ray ray = new Ray(transform.position, Vector3.down);
+            RaycastHit result;
+            isOnGround = Physics.Raycast(ray, out result, .5f);
+
+            if (isOnGround)
+            {
+                anim.gameObject.transform.rotation = Quaternion.LookRotation(localVelocity);
+            }
+
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
         }
 
         private void SubscribeToTimeManager(bool subscribe)
@@ -154,7 +169,7 @@ namespace FarmGame3D
 
             if (horizontal == 0f && vertical == 0f) return;
 
-            data = new MoveData(horizontal, vertical);
+            data = new MoveData(horizontal, vertical, transform.rotation);
         }
 
         [Replicate]
