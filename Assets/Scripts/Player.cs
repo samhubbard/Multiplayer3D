@@ -56,14 +56,21 @@ namespace FarmGame3D
 
         private void Update()
         {
-            if (!IsOwner) return;
+            HandleAnimations();
+        }
 
+        private void HandleAnimations()
+        {
+            if (!IsOwner) return;
+            
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
             float inputMagnitude = Mathf.Clamp01(rb.velocity.magnitude);
-            
+
             anim.SetFloat("Speed", inputMagnitude);
+
+            if (horizontal == 0 && vertical == 0) return;
 
             var localVelocity = transform.InverseTransformDirection(rb.velocity);
 
@@ -73,7 +80,8 @@ namespace FarmGame3D
 
             if (isOnGround)
             {
-                anim.gameObject.transform.rotation = Quaternion.LookRotation(localVelocity);
+                anim.gameObject.transform.rotation = Quaternion.Slerp(anim.gameObject.transform.rotation,
+                    Quaternion.LookRotation(localVelocity), 0.25f);
             }
         }
 
@@ -178,8 +186,7 @@ namespace FarmGame3D
         [Replicate]
         private void Move(MoveData data, bool asServer, bool replaying = false)
         {
-            Vector3 movement = new Vector3(data.Horizontal, 0f, data.Vertical).normalized;
-            movement = movement * MoveRate;
+            Vector3 movement = new Vector3(data.Horizontal, 0f, data.Vertical).normalized * MoveRate;
             rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
         }
 
