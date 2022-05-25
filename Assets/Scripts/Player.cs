@@ -56,6 +56,8 @@ namespace FarmGame3D
 
         private void Update()
         {
+            if (!IsOwner) return;
+
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
@@ -73,8 +75,6 @@ namespace FarmGame3D
             {
                 anim.gameObject.transform.rotation = Quaternion.LookRotation(localVelocity);
             }
-
-            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
         }
 
         private void SubscribeToTimeManager(bool subscribe)
@@ -106,6 +106,9 @@ namespace FarmGame3D
             base.OnStartClient();
             
             SubscribeToTimeManager(true);
+            
+            if (IsOwner)
+                GetComponent<NetworkObject>().GiveOwnership(Owner);
         }
 
         public override void OnStartServer()
@@ -175,7 +178,8 @@ namespace FarmGame3D
         [Replicate]
         private void Move(MoveData data, bool asServer, bool replaying = false)
         {
-            Vector3 movement = new Vector3(data.Horizontal, 0f, data.Vertical) * MoveRate;
+            Vector3 movement = new Vector3(data.Horizontal, 0f, data.Vertical).normalized;
+            movement = movement * MoveRate;
             rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
         }
 
