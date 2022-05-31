@@ -8261,6 +8261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2762ef61a50a4bb58852df4a4d2545fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  normalCamera: {fileID: 0}
+  aimCamera: {fileID: 0}
 --- !u!222 &498578056555929941
 CanvasRenderer:
   m_ObjectHideFlags: 0

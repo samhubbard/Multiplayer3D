@@ -6,12 +6,11 @@ namespace FarmGame3D
 {
     public class CameraController : MonoBehaviour
     {
-        private CinemachineVirtualCamera virtualCamera;
+        [SerializeField] private CinemachineVirtualCamera normalCamera;
+        [SerializeField] private CinemachineVirtualCamera aimCamera;
         
         private void Awake()
         {
-            virtualCamera = GetComponent<CinemachineVirtualCamera>();
-            
             FirstObjectNotifier.OnFirstObjectSpawned += FirstObjectNotifierOnOnFirstObjectSpawned;
         }
 
@@ -22,8 +21,10 @@ namespace FarmGame3D
 
         private void FirstObjectNotifierOnOnFirstObjectSpawned(Transform obj)
         {
-            virtualCamera.Follow = obj;
-            virtualCamera.LookAt = obj;
+            normalCamera.Follow = obj;
+            normalCamera.LookAt = obj;
+            aimCamera.Follow = obj;
+            aimCamera.LookAt = obj;
         }
     }
 }
