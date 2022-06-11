@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement picking-mode="Ignore" style="width: 800px; height: 600px; background-color: rgba(16, 84, 0, 0); align-items: center; justify-content: center; position: absolute;">
+        <ui:Button text="Server" display-tooltip-when-elided="true" name="server-button" style="width: 200px; height: 50px; background-color: rgb(108, 104, 104); position: absolute; left: 10px; top: 10px;" />
+        <ui:Button text="Client" display-tooltip-when-elided="true" name="client-button" style="width: 200px; height: 50px; background-color: rgb(108, 104, 104); position: absolute; left: 10px; top: 60px;" />
+    </ui:VisualElement>
+</ui:UXML>
